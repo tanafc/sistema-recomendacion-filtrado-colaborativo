@@ -1,19 +1,20 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const startButton =  document.getElementById('doButton');
-    const matrixFile = document.getElementById('inputMatrixToRead');
-    
-    function readMatrix() {
+    let results = document.getElementById('results')
+    let matrix = '';
 
-    }
+    document.getElementById('inputMatrixToRead').addEventListener('change', function() {
+      const fr = new FileReader();
+      fr.onload = function() {
+        matrix = fr.result
+      }
+      fr.readAsText(this.files[0]);
+    });
 
-    // function calculatePrediction() {
-    //     const matrix = matrixFile.files[0];
-    //     const fr = new FileReader();
-    //     fr.readAsText(matrix);
-    //     fr.onload = function () {
-    //         console.log(fr.result);
-    //     };
-    // }
-
-    // startButton.addEventListener("click", calculatePrediction());
+    document.getElementById('doButton').addEventListener('click', function() {
+      if (matrix == '') {
+        results.textContent = 'Adjunta una matriz';
+      } else {
+        results.textContent = matrix;
+      }
+    });
 });
