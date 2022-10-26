@@ -21,7 +21,6 @@ export function createMatrix(stringMatrix) {
 
 
 export function createMatrixTable(matrix, divHTML) {
-  let tbl = document.createElement
   let stringMatrix = "";
   for (let i = 0; i < matrix.length; i++) {
     let rowString = "";
