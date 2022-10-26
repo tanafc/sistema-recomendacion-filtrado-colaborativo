@@ -6,7 +6,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const btnsMetric = document.querySelectorAll('input[name="metric"]');
   const numOfNeighbours = document.getElementById('numOfNeighbours');
 
-  let results = document.getElementById('results');
+  let message = document.getElementById('message');
+  let outputResults = document.getElementById('outputResults');
+  let outputWarning = document.getElementById('warning');
   let textMatrix = '';
 
   document.getElementById('inputMatrixToRead').addEventListener('change', function() {
@@ -19,8 +21,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.getElementById('doButton').addEventListener('click', function() {
     if (textMatrix == '') {
-      results.textContent = 'Adjunta una matriz';
+      outputWarning.innerHTML = 'Adjunta una matriz';
     } else {
+      outputWarning.innerHTML = '';
       // Se crea la matriz
       let matrix = createMatrix(textMatrix);
       // Se asignan las métricas y el tipo de predicción
@@ -38,14 +41,40 @@ document.addEventListener('DOMContentLoaded', function () {
           break;
         }
       }
-      console.log(selectedMetric);
-      console.log(selectedPrediction);
-      console.log(numOfNeighbours.value);
-      console.log(matrix);
 
-      // Calculamos medidas de similitud
-      recommendedMatrix(matrix, selectedMetric, selectedPrediction, numOfNeighbours.value);
+      // Calculamos medidas de similitud y obtenemos los resultados
+      const fullResults = recommendedMatrix(matrix, selectedMetric, selectedPrediction, numOfNeighbours.value);
+      const rMatrix = fullResults.matrix;
+      const rSimilitudes = fullResults.similitudes;
+      const rNeighbouts = fullResults.numOfNeighboursChosed;
+      const rPredictions = fullResults.predictions; 
+      // console.log(rMatrix);
+      
+      // Mostramos los resultados
+      outputResults.style.display = "block";
+      let h2Results = document.createElement('h2');
+      let infoResults = document.createElement('p');
+      let h3Results = document.createElement('h3');
+      h2Results.innerHTML = "Resultados del filtrado colaborativo:";
+      infoResults.innerHTML = 
+        `Métrica: ${selectedMetric}, Predicción: ${selectedPrediction}, NºVecinos: ${numOfNeighbours.value}`;
+      h3Results.innerHTML = "Matriz de utilidad:";
+      outputResults.appendChild(h2Results);
+      outputResults.appendChild(infoResults);
+      outputResults.appendChild(h3Results);
 
+      // Mostramos la matriz de utilidad
+      let tbl = document.createElement('table');
+      for (let i = 0; i < rMatrix.length; i++) {
+        const tr = tbl.insertRow();
+        for (let j = 0; j < rMatrix[0].length; j++) {
+          const td = tr.insertCell();
+          td.appendChild(document.createTextNode(rMatrix[i][j]));
+        }
+      }
+      outputResults.appendChild(tbl);
+
+      // Mostramos las similitues de los usuarios
     }
   });
 });

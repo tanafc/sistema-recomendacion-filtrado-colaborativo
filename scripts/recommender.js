@@ -5,8 +5,9 @@
  */
 export function createMatrix(stringMatrix) {
   let matrix = [];
-  let numOfCols = 0; 
+  let numOfCols = 0;
   let numOfRows = 0;
+
 
   // Calculamos el número de filas y columnas
   let stringRowsArray = stringMatrix.split("\r\n");
@@ -16,10 +17,25 @@ export function createMatrix(stringMatrix) {
   // Ingresamos los valores en la matriz
   for (let i = 0; i < numOfRows; i++) {
     let row = stringRowsArray[i].split(" ");
+    if (row[numOfCols - 1] === "") {row.pop()};
     matrix.push(row);
   }
 
   return matrix;
+}
+
+
+export function createMatrixTable(matrix, divHTML) {
+  let tbl = document.createElement
+  let stringMatrix = "";
+  for (let i = 0; i < matrix.length; i++) {
+    let rowString = "";
+    for (let j = 0; j < matrix[0].length; j++) {
+      rowString += matrix[i][j].toString() + " ";
+    }
+    stringMatrix += rowString + "\r\n";
+  }
+  return stringMatrix;
 }
 
 
@@ -71,7 +87,7 @@ function calculateEuclideanDistance(u, v, itemsReviewed, matrix) {
     sum += Math.pow(parseFloat(matrix[u][itemsReviewed[i]]) - parseFloat(matrix[v][itemsReviewed[i]]), 2);
   }
 
-  return Math.sqrt(dividend1) * Math.sqrt(dividend2);
+  return Math.sqrt(sum);
 }
 
 
@@ -85,29 +101,35 @@ function calculateSimplePrediction(closestNeighbours, item, matrix) {
 }
 
 
-function calculateMeanDiffPrediction(closestNeighbours, item, itemsReviewed, matrix) {
+function calculateMeanDiffPrediction(user, closestNeighbours, item, itemsReviewed, matrix) {
   let sum1 = 0, sum2 = 0;
+  let uMean = calculateMean(matrix[user], itemsReviewed);
   for (let v = 0; v < closestNeighbours.length; v++) {
-    let vMean = calculateMean(matrix[v], itemsReviewed);
-    sum1 += closestNeighbours[v].sim * (matrix[closestNeighbours[v].user][item] - vMean)
-    sum2 += Math.abs(closestNeighbours[v].sim)
+    let vMean = calculateMean(matrix[closestNeighbours[v].user], itemsReviewed);
+    sum1 += closestNeighbours[v].sim * (matrix[closestNeighbours[v].user][item] - vMean);
+    sum2 += Math.abs(closestNeighbours[v].sim);
   }
-  return sum1 / sum2;
+
+  return uMean + sum1 / sum2;
 }
 
 
 export function recommendedMatrix(matrix, selectedMetric, selectedPrediction, numOfNeighbours) {
   let numUsers = matrix.length;
   let numItems = matrix[0].length;
+  let rMatrix = matrix;
+  let similitudes = [];
+  let numOfNeighboursChosed = 0;
+  let predictions = [];
   // Vemos a qué usuarios debemos recomendar qué items
   for (let u = 0; u < numUsers; u++) {
     for (let i = 0; i < numItems; i++) {
       // Objetivo: resolver [u, i]
-      if (matrix[u][i] === '-') { 
+      if (rMatrix[u][i] === '-') { 
         // Calculamos las medias
         let itemsReviewedOfUser = [];
         for (let item = 0; item < numItems; item++) {
-          if (matrix[u][item] !== '-') {
+          if (rMatrix[u][item] !== '-') {
             itemsReviewedOfUser.push(item);
           }
         }
@@ -118,15 +140,25 @@ export function recommendedMatrix(matrix, selectedMetric, selectedPrediction, nu
           if (v !== u) {
             for (let item = 0; item < numItems; item++) {
               // Si v no ha valorado los productos recomendados de u, este se descarta.   
-              if ((matrix[v][item] === '-') && (itemsReviewedOfUser.includes(item))) {
+              if ((rMatrix[v][item] === '-') && (itemsReviewedOfUser.includes(item))) {
                 userValid = false;
                 break;
               }
             }
             if (userValid) {
               // Calculamos la métrica correspondiente
-              let sim = calculatePearsonSimilarity(u, v, itemsReviewedOfUser, matrix);
-              console.log(sim);
+              let sim;
+              if (selectedMetric === 'pearson') {
+                sim = calculatePearsonSimilarity(u, v, itemsReviewedOfUser, rMatrix);
+              } else if (selectedMetric === 'euclidean') {
+                sim = calculateEuclideanDistance(u, v, itemsReviewedOfUser, rMatrix);
+              } else if (selectedMetric === 'cosine') {
+                sim = calculateCosineDistance(u, v, itemsReviewedOfUser, rMatrix);
+              } else {
+                console.log("Error: metric not valid");
+              }
+              
+              // console.log(sim);
               neighbours.push({
                 user: v,
                 sim: sim
@@ -134,24 +166,55 @@ export function recommendedMatrix(matrix, selectedMetric, selectedPrediction, nu
             }
           }
         }
+        // Almacenamos los cálculos de los vecinos
+        similitudes.push({
+          user: u,
+          neighbours: neighbours
+        });
         // Calculamos la predicción
         let closestNeighbours = [];
         for (let it = 0; it < numOfNeighbours; it++) {
           let max = -1;
-          let closerUser = 0;
+          let nCloser = 0;
+          let chosed = false;
           for (let n = 0; n < neighbours.length; n++) {
             if (neighbours[n].sim >= max) {
               max = neighbours[n].sim;
-              closerUser = n;
+              nCloser = n;
+              chosed = true;
             }
           }
-          closestNeighbours.push(neighbours[closerUser]);
-          neighbours.splice(closerUser, 1);
+          if (chosed) {
+            closestNeighbours.push(neighbours[nCloser]);
+            neighbours.splice(nCloser, 1);
+          }
         }
-        console.log(closestNeighbours);
-        console.log(calculateSimplePrediction(closestNeighbours, i, matrix));
-        console.log(calculateMeanDiffPrediction(closestNeighbours, i, itemsReviewedOfUser, matrix));
+        // Almacenamos el número de vecinos seleccionados
+        numOfNeighboursChosed = closestNeighbours.length;
+        // console.log(closestNeighbours);
+        let prediction = -1;
+        if (selectedPrediction === 'mean') {
+          prediction = calculateMeanDiffPrediction(u, closestNeighbours, i, itemsReviewedOfUser, rMatrix);
+        } else if (selectedPrediction === 'simple') {
+          prediction = calculateSimplePrediction(closestNeighbours, i, rMatrix);
+        } else {
+          console.log('Error: prediction not valid');
+        }
+        rMatrix[u][i] = Math.round((prediction + Number.EPSILON) * 100) / 100;
+        // Almacenamos la predicción del usuario u sobre el producto i
+        // console.log(prediction);
+        predictions.push({
+          user: u,
+          item: i,
+          prediction: prediction
+        });
       }
     }
   }
+  return {
+    matrix: rMatrix,
+    similitudes: similitudes,
+    numOfNeighboursChosed: numOfNeighboursChosed,
+    predictions: predictions
+  };
 }
