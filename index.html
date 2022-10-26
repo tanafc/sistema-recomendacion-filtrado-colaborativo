@@ -11,13 +11,13 @@
             </div>
             <div>
                 <label for="numOfNeighbours">Introduce el número de vecinos:</label>
-                <input type="number" name="numOfNeighbours" id="numOfNeighbours" min="1" />
+                <input type="number" name="numOfNeighbours" id="numOfNeighbours" min="1" value="1" />
             </div>
             <div>
                 <fieldset>
                     <legend>Selecciona una métrica:</legend>
                     <div>
-                      <input type="radio" id="pearson" name="metric" value="pearson">
+                      <input type="radio" id="pearson" name="metric" value="pearson" checked>
                       <label for="pearson">Correlación de Pearson</label>
                     </div>
                 
@@ -36,7 +36,7 @@
                 <fieldset>
                     <legend>Selecciona un tipo de predicción:</legend>
                     <div>
-                      <input type="radio" id="simple" name="prediction" value="simple">
+                      <input type="radio" id="simple" name="prediction" value="simple" checked>
                       <label for="simple">Predicción Simple</label>
                     </div>
                 
@@ -54,6 +54,6 @@
 
           </p>
         </div>
-        <script src="/scripts/index.js"></script>
+        <script type="module" src="/scripts/index.js"></script>
     </body>
 </html>
