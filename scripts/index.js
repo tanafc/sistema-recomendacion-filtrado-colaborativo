@@ -1,14 +1,12 @@
 import {createMatrix, recommendedMatrix} from './recommender.js';
 
-
 document.addEventListener('DOMContentLoaded', function () {
   const btnsPrediction = document.querySelectorAll('input[name="prediction"]');
   const btnsMetric = document.querySelectorAll('input[name="metric"]');
   const numOfNeighbours = document.getElementById('numOfNeighbours');
 
-  let message = document.getElementById('message');
-  let outputResults = document.getElementById('outputResults');
-  let outputWarning = document.getElementById('warning');
+  const outputResults = document.getElementById('outputResults');
+  const outputWarning = document.getElementById('warning');
   let textMatrix = '';
 
   document.getElementById('inputMatrixToRead').addEventListener('change', function() {
@@ -45,9 +43,6 @@ document.addEventListener('DOMContentLoaded', function () {
       // Calculamos medidas de similitud y obtenemos los resultados
       const fullResults = recommendedMatrix(matrix, selectedMetric, selectedPrediction, numOfNeighbours.value);
       const rMatrix = fullResults.matrix;
-      const rSimilitudes = fullResults.similitudes;
-      const rNeighbouts = fullResults.numOfNeighboursChosed;
-      const rPredictions = fullResults.predictions; 
       // console.log(rMatrix);
       
       // Mostramos los resultados
@@ -73,8 +68,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       }
       outputResults.appendChild(tbl);
-
-      // Mostramos las similitues de los usuarios
     }
   });
 });
