@@ -90,9 +90,10 @@ function calculateEuclideanDistance(u, v, itemsReviewed, matrix) {
 function calculateSimplePrediction(closestNeighbours, item, matrix) {
   let sum1 = 0, sum2 = 0;
   for (let x = 0; x < closestNeighbours.length; x++) {
-    sum1 += closestNeighbours[x].sim * matrix[closestNeighbours[x].user][item]
-    sum2 += closestNeighbours[x].sim
+    sum1 += closestNeighbours[x].sim * parseFloat(matrix[closestNeighbours[x].user][item]);
+    sum2 += closestNeighbours[x].sim;
   }
+  
   return sum1 / sum2;
 }
 
@@ -131,7 +132,7 @@ export function recommendedMatrix(matrix, selectedMetric, selectedPrediction, nu
             itemsReviewedOfUser.push(item);
           }
         }
-        // Determinamos los usuarios con los mismos items valorados
+        // Determinamos los usuarios con los mismos items valorados y el item a valorar
         console.log(`Similitudes según métrica ${selectedMetric}:`)
         let neighbours = [];
         for (let v = 0; v < numUsers; v++) {
@@ -144,6 +145,9 @@ export function recommendedMatrix(matrix, selectedMetric, selectedPrediction, nu
                 break;
               }
             }
+            // Si v no tiene valorado el producto i a recomendar, se descarta
+            if (rMatrix[v][i] === '-') {userValid = false};
+
             if (userValid) {
               // Calculamos la métrica correspondiente
               let sim;
@@ -194,7 +198,6 @@ export function recommendedMatrix(matrix, selectedMetric, selectedPrediction, nu
           console.log(`> Usuario ${closestNeighbours[n].user + 1}`)
         }
         neighboursChosed = closestNeighbours;
-
         // Calculamos la predicción
         let prediction = -1;
         if (selectedPrediction === 'mean') {
@@ -215,6 +218,10 @@ export function recommendedMatrix(matrix, selectedMetric, selectedPrediction, nu
       }
     }
   }
+  // Mostramos la matriz
+  console.log(`Matriz de utilidad:`)
+  console.log(rMatrix);
+  
   return {
     matrix: rMatrix,
     similitudes: similitudes,
