@@ -120,7 +120,7 @@ function calculateSimplePrediction(closestNeighbours, item, matrix) {
   let sum1 = 0, sum2 = 0;
   for (let x = 0; x < closestNeighbours.length; x++) {
     sum1 += closestNeighbours[x].sim * parseFloat(matrix[closestNeighbours[x].user][item]);
-    sum2 += closestNeighbours[x].sim;
+    sum2 += Math.abs(closestNeighbours[x].sim);
   }
   
   return sum1 / sum2;
@@ -141,7 +141,7 @@ function calculateMeanDiffPrediction(user, closestNeighbours, item, itemsReviewe
   let uMean = calculateMean(matrix[user], itemsReviewed);
   for (let v = 0; v < closestNeighbours.length; v++) {
     let vMean = calculateMean(matrix[closestNeighbours[v].user], itemsReviewed);
-    sum1 += closestNeighbours[v].sim * (matrix[closestNeighbours[v].user][item] - vMean);
+    sum1 += closestNeighbours[v].sim * (parseFloat(matrix[closestNeighbours[v].user][item]) - vMean);
     sum2 += Math.abs(closestNeighbours[v].sim);
   }
   return uMean + sum1 / sum2;
