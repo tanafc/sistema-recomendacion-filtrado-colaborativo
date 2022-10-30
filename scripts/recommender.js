@@ -1,3 +1,8 @@
+/**
+ * Creates a matrix from string
+ * @param {*} stringMatrix 
+ * @returns the matrix
+ */
 export function createMatrix(stringMatrix) {
   let matrix = [];
   let numOfCols = 0;
@@ -25,19 +30,12 @@ export function createMatrix(stringMatrix) {
 }
 
 
-export function createMatrixTable(matrix, divHTML) {
-  let stringMatrix = "";
-  for (let i = 0; i < matrix.length; i++) {
-    let rowString = "";
-    for (let j = 0; j < matrix[0].length; j++) {
-      rowString += matrix[i][j].toString() + " ";
-    }
-    stringMatrix += rowString + "\r\n";
-  }
-  return stringMatrix;
-}
-
-
+/**
+ * Calculates the mean from the reviews of items from the user
+ * @param {*} reviewScores scores of the reviews from the user
+ * @param {*} itemsReviewed list of items reviewed by the user
+ * @returns the mean of the scores
+ */
 function calculateMean(reviewScores, itemsReviewed) {
   let sum = 0;
   for (let i = 0; i < itemsReviewed.length; i++) {
@@ -47,6 +45,14 @@ function calculateMean(reviewScores, itemsReviewed) {
 }
 
 
+/**
+ * Calculates the pearson similarity between user u and v
+ * @param {*} u user
+ * @param {*} v user
+ * @param {*} itemsReviewed items reviewed by user u
+ * @param {*} matrix matrix with all the scores of the users
+ * @returns the pearson similarity
+ */
 function calculatePearsonSimilarity(u, v, itemsReviewed, matrix) {
   // Calculamos la media del usuario u y v
   const uMean = calculateMean(matrix[u], itemsReviewed);
@@ -64,6 +70,14 @@ function calculatePearsonSimilarity(u, v, itemsReviewed, matrix) {
 }
 
 
+/**
+ * Calculates the cosine distance between the scores of user u and v
+ * @param {*} u user 
+ * @param {*} v user 
+ * @param {*} itemsReviewed items reviewed by user u
+ * @param {*} matrix matrix with all the scores of the users
+ * @returns the cosine distance
+ */
 function calculateCosineDistance(u, v, itemsReviewed, matrix) {
   // Calculamos la Distancia Coseno
   let divisor = 0;
@@ -77,6 +91,14 @@ function calculateCosineDistance(u, v, itemsReviewed, matrix) {
 }
 
 
+/**
+ * Calculates the euclidean distance between the scores of user u and v
+ * @param {*} u user 
+ * @param {*} v user 
+ * @param {*} itemsReviewed items reviewed by user u
+ * @param {*} matrix matrix with all the scores of the users
+ * @returns the euclidean distance
+ */
 function calculateEuclideanDistance(u, v, itemsReviewed, matrix) {
   // Calculamos la Distancia Euclídea
   let sum = 0;
@@ -87,6 +109,13 @@ function calculateEuclideanDistance(u, v, itemsReviewed, matrix) {
 }
 
 
+/**
+ * Calculates the simple prediction of a user's scores with its neighbours
+ * @param {*} closestNeighbours closest neighbours for prediction
+ * @param {*} item item to predict the score
+ * @param {*} matrix matrix with all the scores of the users
+ * @returns the simple prediction
+ */
 function calculateSimplePrediction(closestNeighbours, item, matrix) {
   let sum1 = 0, sum2 = 0;
   for (let x = 0; x < closestNeighbours.length; x++) {
@@ -98,6 +127,15 @@ function calculateSimplePrediction(closestNeighbours, item, matrix) {
 }
 
 
+/**
+ * Calculates the mean difference prediction of a user's scores with its neighbours
+ * @param {*} user to predict its score of the item
+ * @param {*} closestNeighbours closest neighbours for prediction
+ * @param {*} item item to predict the score
+ * @param {*} itemsReviewed items reviewed by the user
+ * @param {*} matrix matrix with all the scores of the users
+ * @returns the mean prediction
+ */
 function calculateMeanDiffPrediction(user, closestNeighbours, item, itemsReviewed, matrix) {
   let sum1 = 0, sum2 = 0;
   let uMean = calculateMean(matrix[user], itemsReviewed);
@@ -110,6 +148,14 @@ function calculateMeanDiffPrediction(user, closestNeighbours, item, itemsReviewe
 }
 
 
+/**
+ * Calculates the matrix with all the recommended scores from users
+ * @param {*} matrix matrix with the actual scores of the users
+ * @param {*} selectedMetric metric selected to calculate the similarity
+ * @param {*} selectedPrediction prediction selected to calculate the scores
+ * @param {*} numOfNeighbours number of neighbours to have on account for the prediction
+ * @returns the matrix calculated and the rest of parameters given as an object
+ */
 export function recommendedMatrix(matrix, selectedMetric, selectedPrediction, numOfNeighbours) {
   let numUsers = matrix.length;
   let numItems = matrix[0].length;
@@ -221,7 +267,7 @@ export function recommendedMatrix(matrix, selectedMetric, selectedPrediction, nu
   // Mostramos la matriz
   console.log(`Matriz de utilidad:`)
   console.log(rMatrix);
-  
+
   return {
     matrix: rMatrix,
     similitudes: similitudes,

@@ -43,9 +43,8 @@ document.addEventListener('DOMContentLoaded', function () {
       // Calculamos medidas de similitud y obtenemos los resultados
       const fullResults = recommendedMatrix(matrix, selectedMetric, selectedPrediction, numOfNeighbours.value);
       const rMatrix = fullResults.matrix;
-      // console.log(rMatrix);
       
-      // Mostramos los resultados
+      // Mostramos los resultados en la página
       outputResults.style.display = "block";
       let h2Results = document.createElement('h2');
       let infoResults = document.createElement('p');

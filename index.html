@@ -1,5 +1,6 @@
 <html lang="es-ES">
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Filtrado Colaborativo</title>
         <link rel="stylesheet" href="styles/style.css">
     </head>
@@ -19,18 +20,18 @@
                   <fieldset>
                       <legend>Selecciona una métrica:</legend>
                       <div>
-                        <input type="radio" id="pearson" name="metric" value="pearson" checked>
                         <label for="pearson">Correlación de Pearson</label>
+                        <input type="radio" id="pearson" name="metric" value="pearson" checked>
                       </div>
                   
                       <div>
-                        <input type="radio" id="cosine" name="metric" value="cosine">
                         <label for="cosine">Distancia Coseno</label>
+                        <input type="radio" id="cosine" name="metric" value="cosine"> 
                       </div>
                   
                       <div>
-                        <input type="radio" id="euclidean" name="metric" value="euclidean">
                         <label for="euclidean ">Distancia Euclídea</label>
+                        <input type="radio" id="euclidean" name="metric" value="euclidean">
                       </div>
                   </fieldset>
               </div>
@@ -38,17 +39,17 @@
                   <fieldset>
                       <legend>Selecciona un tipo de predicción:</legend>
                       <div>
-                        <input type="radio" id="simple" name="prediction" value="simple" checked>
                         <label for="simple">Predicción Simple</label>
+                        <input type="radio" id="simple" name="prediction" value="simple" checked>
                       </div>
                   
                       <div>
-                        <input type="radio" id="mean" name="prediction" value="mean">
                         <label for="mean">Diferencia con la media</label>
+                        <input type="radio" id="mean" name="prediction" value="mean">
                       </div>
                   </fieldset>
               </div>
-              <input type="button" value="Calcular" id="doButton" />
+              <input type="button" value="Calcular" id="doButton">
           </form>
         </div>
         
