@@ -5,7 +5,12 @@ export function createMatrix(stringMatrix) {
 
 
   // Calculamos el número de filas y columnas
-  let stringRowsArray = stringMatrix.split("\r\n");
+  let stringRowsArray = stringMatrix.split(/\r?\n|\r|\n/g);
+  // Desechamos la ultima fila en caso de estar vacía
+  if (stringRowsArray[stringRowsArray.length - 1] === "") {
+    stringRowsArray.pop();
+  }
+  // Determinamos el número de filas y columnas
   numOfRows = stringRowsArray.length;
   numOfCols = stringRowsArray[0].split(" ").length;
 
@@ -15,7 +20,7 @@ export function createMatrix(stringMatrix) {
     if (row[numOfCols - 1] === "") {row.pop()};
     matrix.push(row);
   }
-
+  
   return matrix;
 }
 
