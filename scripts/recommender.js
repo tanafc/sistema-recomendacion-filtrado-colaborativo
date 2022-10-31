@@ -171,7 +171,7 @@ export function recommendedMatrix(matrix, selectedMetric, selectedPrediction, nu
         console.log(
           `Predicción de la valoración del usuario ${u + 1} sobre el producto ${i + 1}`
         );
-        // Calculamos las medias
+        // Items que el usuario u ha valorado
         let itemsReviewedOfUser = [];
         for (let item = 0; item < numItems; item++) {
           if (rMatrix[u][item] !== '-') {
