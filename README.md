@@ -41,7 +41,7 @@ Si se desean observar los cálculos realizados por la aplicación, se pueden obs
 
 ## Código desarrollado
 
-La aplicación se estructura en base al código del esqueleto HTML en el fichero `index`, los estilos dentro de la carpeta `styles`, y el código de javascript dentro de la carpeta de `scripts`.
+La aplicación se estructura en base al código del esqueleto HTML en el fichero `index.html`, los estilos dentro de la carpeta `styles`, y el código de javascript dentro de la carpeta de `scripts`.
 
 La declaración de los elementos del DOM se realiza en el fichero de `index.js`, donde se recogen los valores de los inputs y se pasan a las funciones declaradas en `recommender.js`, que implementan los cálculos para el resultado de la matriz.
 
